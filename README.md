@@ -59,6 +59,38 @@ js/app.js       application logic
 - **API** — “backend” functions (`login`, `search`, `listUsers`, `setRole`). Every call verifies the token; role checks and document filtering happen here, not in the UI.
 - **Session / Router / Views** — the front end.
 
+## How it works
+
+There is no real server yet. The browser runs everything, and a "request" is the page calling a function of the `API` object. The API always checks the session token first.
+
+```
+Page (Views)  ──►  API  ──►  SSO (checks the password)
+                    │
+                    └──►  DB  (users table, roles)
+```
+
+**Login**
+1. The user enters a username and password and clicks Login.
+2. `API.login` asks `SSO` whether the password is correct. If it is wrong, the page shows “Invalid username or password”.
+3. The API finds the user in `DB` (a first-time user is created as Student) and saves `last_login`.
+4. The API returns a signed token with the user's id, name and role. The page keeps it in `sessionStorage` and opens the search page.
+
+**Search**
+1. An empty query is not sent. The page shows “Please enter your question”.
+2. Otherwise the page calls `API.search(token, query)`.
+3. The API checks the token and reads the role: Student sees public documents, Staff sees public and staff documents, Admin sees all.
+4. The documents are ranked by matching words (title +3, tags +2, text +1) and returned to the page, and the query is added to History.
+
+**Changing a role (admin)**
+1. The admin picks a role and clicks Save. The page calls `API.setRole(token, userId, role)`.
+2. The API checks that the token belongs to an Admin and that the admin is not changing their own role. Otherwise it returns “Access Denied”.
+3. The role is saved in `DB`. The user gets it at their next login, because the old token still has the old role.
+
+**Session timeout**
+Every click or key press updates the last-activity time. After 30 minutes without activity, the session ends and the login page shows “Session expired, please log in again”.
+
+When the real backend is added, the `API` functions become HTTP endpoints (for example `POST /api/login`, `GET /api/search?q=`), `DB` becomes a real database and `SSO` becomes the university login. The flow stays the same.
+
 ## Limitations of the prototype
 
 - SSO / LDAP, the database and the API are simulated in the browser. In the next iterations they will be replaced by the real university SSO and a server with a database.
