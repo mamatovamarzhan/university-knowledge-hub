@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>University Knowledge Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast notice" role="status" hidden></div>
+
+<button class="qa-toggle" id="qaToggle" type="button" aria-controls="qa" aria-expanded="false">QA checks <span class="mono">US1–US3</span></button>
+<aside class="qa" id="qa" hidden aria-label="QA checks">
+  <div class="qa-head">
+    <h2>QA checks · Sprint 1</h2>
+    <button class="btn btn-sm btn-ghost" id="qaClose" type="button">Close</button>
+  </div>
+  <div class="qa-body" id="qaBody"></div>
+</aside>
+
+<script src="js/app.js"></script>
+</body>
+</html>
